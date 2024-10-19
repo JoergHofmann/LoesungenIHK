@@ -31,45 +31,26 @@
 		</copy>
 	</target>
 
-	<target name="copy4hugo" depends="prepare" unless="done">
-		<delete includeemptydirs="true">
-			<fileset dir = "0_HUGO/content" includes = "**/*"/>
-		</delete>
-		<copy todir="0_HUGO/static/images" overwrite="true">
+	<target name="copy4lia" unless="done">
+	    <copy todir="0_LIA/images" overwrite="true">
 			<fileset dir="bilder" includes="*.png" />
 			<fileset dir="bilder" includes="*.svg" />
 			<fileset dir="bilder" includes="*.gif" />
 			<fileset dir="bilder" includes="*.jpg" />
 			<fileset dir="bilder" includes="*.pdf" />
 		</copy>
-		<copy todir="0_HUGO/layouts/partials" overwrite="true">
-			<fileset dir="hugo/layouts/partials">
-				<include name="*.*" />
-			</fileset>
+	    <copy todir="0_LIA/scripts" overwrite="true">
+			<fileset dir="scripts" includes="*.js" />
+		</copy>
+	    <copy todir="0_LIA/css" overwrite="true">
+			<fileset dir="formate" includes="*.css" />
 		</copy>
 	</target>
 
-	<target name="hugo" depends="prepare" unless="done">
-	    <antcall target="copy4hugo" />
-            <move file="0_TMP/hugo.yaml" tofile="0_HUGO/hugo.yaml" />
-	    <exec executable="ypp" output="0_HUGO/content/_index.pdc" logError="true">
-		<arg line="-l hugo.lua titelseite.md" />
-	    </exec>
-	   <echo message="hugo: apply"/>
-	    <apply executable="ypp" dir="0_TMP" dest="0_TMP" logError="true">
-		<arg line="-l hugo.lua" />
-		<srcfile />
-		<arg line="-o " />
-		<targetfile />
-		<fileset dir="0_TMP">
-			<include name="${ant.project.name}-kap*.md" />
-			<exclude name="${ant.project.name}-kap-h.md" />
-		</fileset>
-		<mapper type="glob" from="*.md" to="*.pdc" />
-	    </apply>
-	   <echo message="hugo: exec"/>
-	    <exec executable="CopyForHugo.sh" dir="0_TMP" logError="true">
-		<arg line="${ant.project.name}" />
+	<target name="lia" depends="prepare" unless="done">
+	    <antcall target="copy4lia" />
+	    <exec executable="ypp" output="0_LIA/README.md" logError="true">
+		<arg line="-l liascript.lua muster.md" />
 	    </exec>
 	    <property name="done" value="done" />
 	</target>
